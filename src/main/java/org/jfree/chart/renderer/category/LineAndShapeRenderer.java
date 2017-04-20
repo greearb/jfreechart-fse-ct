@@ -306,6 +306,19 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
         fireChangeEvent();
     }
 
+    /* Be compatible with newer jfreechart 1.5 API */
+    public void setDefaultLinesVisible(boolean flag) {
+       setBaseLinesVisible(flag);
+    }
+
+    public void setDefaultShapesFilled(boolean flag) {
+       setBaseShapesFilled(flag);
+    }
+
+    public void setDefaultShapesVisible(boolean flag) {
+       setBaseShapesVisible(flag);
+    }
+
     // SHAPES VISIBLE
 
     /**

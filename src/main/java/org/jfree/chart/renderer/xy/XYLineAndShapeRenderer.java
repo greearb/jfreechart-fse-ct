@@ -326,6 +326,19 @@ public class XYLineAndShapeRenderer extends AbstractXYItemRenderer
         fireChangeEvent();
     }
 
+    /* Be compatible with newer jfreechart 1.5 API */
+    public void setDefaultLinesVisible(boolean flag) {
+       setBaseLinesVisible(flag);
+    }
+
+    public void setDefaultShapesFilled(boolean flag) {
+       setBaseShapesFilled(flag);
+    }
+
+    public void setDefaultShapesVisible(boolean flag) {
+       setBaseShapesVisible(flag);
+    }
+
     /**
      * Returns the shape used to represent a line in the legend.
      *
