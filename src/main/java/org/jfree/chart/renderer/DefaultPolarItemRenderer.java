@@ -508,6 +508,11 @@ public class DefaultPolarItemRenderer extends AbstractRenderer
         GeneralPath poly = null;
         ValueAxis axis = plot.getAxisForDataset(plot.indexOf(dataset));
         final int numPoints = dataset.getItemCount(seriesIndex);
+
+        if (numPoints == 0) {
+            return;
+        }
+        
         for (int i = 0; i < numPoints; i++) {
             double theta = dataset.getXValue(seriesIndex, i);
             double radius = dataset.getYValue(seriesIndex, i);
