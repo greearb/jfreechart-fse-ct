@@ -808,9 +808,11 @@ public class LogarithmicAxis extends NumberAxis {
                     if (zeroTickFlag) {   //if did zero tick last iter then
                         --j;              //decrement to do 1.0 tick now
                     }     //calculate power-of-ten value for tick:
+
+                    final int jj = j == 0 ? j : 10 - j;
                     currentTickValue = (i >= 0)
                         ? Math.pow(10, i) + (Math.pow(10, i) * j)
-                        : -(Math.pow(10, -i) - (Math.pow(10, -i - 1) * j));
+                        : -(Math.pow(10, -i) - (Math.pow(10, -i - 1) * jj));
                     if (!zeroTickFlag) {  // did not do zero tick last iteration
                         if (Math.abs(currentTickValue - 1.0) < 0.0001
                             && lowerBoundVal <= 0.0 && upperBoundVal >= 0.0) {
@@ -826,9 +828,10 @@ public class LogarithmicAxis extends NumberAxis {
                                // of the first two, if it's the first or last
                                // in the set, or if it's 1-5; beyond that
                                // show fewer as the values get larger:
+                    final int ii = Math.abs(i);
                     tickLabel = ((this.expTickLabelsFlag && j < 2)
                                 || j < 1
-                                || (i < 1 && j < 5) || (j < 4 - i)
+                                || (ii < 1 && j < 5) || (j < 4 - ii)
                                 || currentTickValue >= upperBoundVal)
                                    ? makeTickLabel(currentTickValue) : "";
                 }
