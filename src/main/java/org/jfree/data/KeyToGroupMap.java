@@ -165,6 +165,24 @@ public class KeyToGroupMap implements Cloneable, PublicCloneable, Serializable {
     }
 
     /**
+     * Replace the default group with a new group. Any keys in the old default
+     * group will remain in the new default group.
+     *
+     * @param group the group (<code>null</code> not permitted).
+     */
+    public void replaceDefaultGroup(Comparable group) {
+       if (group == null) {
+         throw new IllegalArgumentException("Null 'group' argument.");
+       }
+       if (this.defaultGroup.equals(group))
+          return;
+       for (Comparable key : this.keyToGroupMap.keySet())
+          this.keyToGroupMap.replace(key, this.defaultGroup, group);
+       this.groups.remove(group);
+       this.defaultGroup = group;
+    }
+
+    /**
      * Maps a key to a group.
      *
      * @param key  the key (<code>null</code> not permitted).
