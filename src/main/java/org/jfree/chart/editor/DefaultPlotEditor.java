@@ -50,6 +50,7 @@ package org.jfree.chart.editor;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
@@ -57,6 +58,7 @@ import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -64,6 +66,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.jfree.chart.axis.Axis;
@@ -82,6 +85,8 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.util.ResourceBundleWrapper;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.xy.XYDataset;
 
 /**
  * A panel for editing the properties of a {@link Plot}.
@@ -150,6 +155,8 @@ class DefaultPlotEditor extends JPanel implements ActionListener {
      */
     private JCheckBox drawShapesCheckBox;
 
+    private JCheckBox[] showDataBoxes;
+
     /** The resourceBundle for the localization. */
     protected static ResourceBundle localizationResources
             = ResourceBundleWrapper.getBundle(
@@ -189,6 +196,13 @@ class DefaultPlotEditor extends JPanel implements ActionListener {
                 this.drawLines = r.getBaseLinesVisible();
                 this.drawShapes = r.getBaseShapesVisible();
             }
+
+            CategoryDataset dataset = ((CategoryPlot) plot).getDataset();
+            this.showDataBoxes = new JCheckBox[dataset.getRowCount()];
+            for (int i = 0; i < this.showDataBoxes.length; i++) {
+                this.showDataBoxes[i] = new JCheckBox(dataset.getRowKey(i).toString(),
+                        renderer.isSeriesVisible(i));
+            }
         }
         else if (plot instanceof XYPlot) {
             XYItemRenderer renderer = ((XYPlot) plot).getRenderer();
@@ -196,6 +210,13 @@ class DefaultPlotEditor extends JPanel implements ActionListener {
                 StandardXYItemRenderer r = (StandardXYItemRenderer) renderer;
                 this.drawLines = r.getPlotLines();
                 this.drawShapes = r.getBaseShapesVisible();
+            }
+
+            XYDataset dataset = ((XYPlot) plot).getDataset();
+            this.showDataBoxes = new JCheckBox[dataset.getSeriesCount()];
+            for (int i = 0; i < this.showDataBoxes.length; i++) {
+                this.showDataBoxes[i] = new JCheckBox(dataset.getSeriesKey(i).toString(),
+                        renderer.isSeriesVisible(i));
             }
         }
 
@@ -306,6 +327,36 @@ class DefaultPlotEditor extends JPanel implements ActionListener {
         JTabbedPane tabs = createPlotTabs(plot);
         tabs.add(localizationResources.getString("Appearance"), appearance);
         panel.add(tabs);
+
+        if (this.showDataBoxes != null) {
+            JPanel vis = new JPanel(new BorderLayout());
+            vis.setBorder(BorderFactory.createTitledBorder(
+                    localizationResources.getString("Data_Visibility")));
+
+            JPanel data = new JPanel(new BorderLayout());
+            data.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            data.add(vis, BorderLayout.NORTH);
+
+            tabs.add(localizationResources.getString("Visibility"), data);
+
+            JPanel vis_interior = new JPanel();
+            vis_interior.setLayout(new BoxLayout(vis_interior,
+                BoxLayout.Y_AXIS));
+            vis_interior.setBorder(
+                BorderFactory.createEmptyBorder(0, 5, 0, 5));
+
+            for (final JCheckBox checkBox : this.showDataBoxes) {
+                vis_interior.add(checkBox);
+            }
+
+            final Dimension d = vis.getPreferredSize();
+            d.height = 300;
+
+            final JScrollPane vis_scroller = new JScrollPane(vis_interior);
+            vis_scroller.setPreferredSize(d);
+
+            vis.add(vis_scroller, BorderLayout.NORTH);
+        }
 
         return panel;
     }
@@ -629,6 +680,26 @@ class DefaultPlotEditor extends JPanel implements ActionListener {
             }
         }
 
+        if (this.showDataBoxes != null) {
+            for (int i = 0; i < this.showDataBoxes.length; i++) {
+                if (plot instanceof CategoryPlot) {
+                    CategoryPlot catplot = (CategoryPlot) plot;
+                    if (i >= catplot.getDataset().getRowCount()) {
+                        break;
+                    }
+
+                    catplot.getRenderer().setSeriesVisible(i, this.showDataBoxes[i].isSelected());
+                }
+                else if (plot instanceof XYPlot) {
+                    XYPlot xyplot = (XYPlot) plot;
+                    if (i >= xyplot.getDataset().getSeriesCount()) {
+                        break;
+                    }
+
+                    xyplot.getRenderer().setSeriesVisible(i, this.showDataBoxes[i].isSelected());
+                }
+            }
+        }
     }
 
 }
