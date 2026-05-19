@@ -293,10 +293,13 @@ public class DefaultCategoryDataset extends AbstractDataset
                                Comparable rowKey,
                                Comparable columnKey) {
         double existing = 0.0;
-        Number n = getValue(rowKey, columnKey);
-        if (n != null) {
-            existing = n.doubleValue();
+        try {
+            Number n = getValue(rowKey, columnKey);
+            if (n != null) {
+                existing = n.doubleValue();
+            }
         }
+        catch (Exception e) {}
         setValue(existing + value, rowKey, columnKey);
     }
 
