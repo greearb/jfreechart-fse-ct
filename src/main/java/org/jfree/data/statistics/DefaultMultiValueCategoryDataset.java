@@ -45,6 +45,7 @@ package org.jfree.data.statistics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Arrays;
 
 import org.jfree.chart.axis.NumberComparator;
 import org.jfree.chart.util.PublicCloneable;
@@ -90,6 +91,65 @@ public class DefaultMultiValueCategoryDataset extends AbstractDataset
         this.minimumRangeValue = null;
         this.maximumRangeValue = null;
         this.rangeBounds = new Range(0.0, 0.0);
+    }
+
+    /**
+     * Add a value to the dataset (<code>null</code> and Double.NaN items are
+     * automatically ignored) and sends a {@link DatasetChangeEvent} to all
+     * registered listeners. If data is already present for the given keys, the
+     * value is added to set.
+     *
+     * @param value  a value.
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     */
+    public void addValue(Number value, Comparable rowKey, Comparable columnKey) {
+        if (value == null || Double.isNaN(value.doubleValue())) {
+            return;
+        }
+        if (rowKey == null) {
+            throw new IllegalArgumentException("Null 'rowKey' argument.");
+        }
+        if (columnKey == null) {
+            throw new IllegalArgumentException("Null 'columnKey' argument.");
+        }
+
+        ArrayList<Number> values = null;
+
+        try {
+            values = (ArrayList<Number>)this.data.getObject(rowKey, columnKey);
+        }
+        catch (Exception e) {}
+
+        if (values == null) {
+            this.add(Arrays.asList(value), rowKey, columnKey);
+            return;
+        }
+
+        int index = Collections.binarySearch(values, value, new NumberComparator());
+        if (index < 0) {
+            index = -index - 1;
+        }
+        values.add(index, value);
+
+        // update the cached range values...
+        if (this.maximumRangeValue == null) {
+            this.maximumRangeValue = value;
+        }
+        else if (value.doubleValue() > this.maximumRangeValue.doubleValue()) {
+            this.maximumRangeValue = value;
+        }
+
+        if (this.minimumRangeValue == null) {
+            this.minimumRangeValue = value;
+        }
+        else if (value.doubleValue() < this.minimumRangeValue.doubleValue()) {
+            this.minimumRangeValue = value;
+        }
+        this.rangeBounds = new Range(this.minimumRangeValue.doubleValue(),
+                this.maximumRangeValue.doubleValue());
+
+        fireDatasetChanged();
     }
 
     /**
