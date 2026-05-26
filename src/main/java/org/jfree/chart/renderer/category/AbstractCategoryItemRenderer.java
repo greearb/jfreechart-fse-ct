@@ -152,6 +152,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DrawingSupplier;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.Marker;
+import org.jfree.chart.plot.KeyedDrawingSupplier;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.ValueMarker;
@@ -1788,4 +1789,218 @@ public abstract class AbstractCategoryItemRenderer extends AbstractRenderer
         entities.add(entity);
     }
 
+    /**
+     * Returns the paint used to fill an item drawn by the renderer.
+     *
+     * @param series  the series index (zero-based).
+     *
+     * @return The paint (never <code>null</code>).
+     *
+     * @since 1.0.6
+     */
+    @Override
+    public Paint lookupSeriesPaint(int series) {
+        Paint seriesPaint = getSeriesPaint(series);
+        if (seriesPaint == null && this.getAutoPopulateSeriesPaint()) {
+            DrawingSupplier supplier = getDrawingSupplier();
+
+            if (supplier != null) {
+                if (supplier instanceof KeyedDrawingSupplier) {
+                    KeyedDrawingSupplier key_supplier = (KeyedDrawingSupplier)supplier;
+                    final Comparable<?> key = getPlot().getDataset().getRowKey(series);
+                    seriesPaint = key_supplier.getNextPaint(key);
+                }
+                else {
+                    seriesPaint = supplier.getNextPaint();
+                }
+                seriesPaint = supplier.getNextPaint();
+                setSeriesPaint(series, seriesPaint, false);
+            }
+        }
+        if (seriesPaint == null) {
+            seriesPaint = getDefaultPaint();
+        }
+        return seriesPaint;
+
+    }
+
+    /**
+     * Returns the paint used to fill an item drawn by the renderer.
+     *
+     * @param series  the series (zero-based index).
+     *
+     * @return The paint (never <code>null</code>).
+     *
+     * @since 1.0.6
+     */
+    @Override
+    public Paint lookupSeriesFillPaint(int series) {
+
+        Paint seriesFillPaint = getSeriesFillPaint(series);
+        if (seriesFillPaint == null && this.getAutoPopulateSeriesFillPaint()) {
+            DrawingSupplier supplier = getDrawingSupplier();
+
+            if (supplier != null) {
+                if (supplier instanceof KeyedDrawingSupplier) {
+                    KeyedDrawingSupplier key_supplier = (KeyedDrawingSupplier)supplier;
+                    final Comparable<?> key = getPlot().getDataset().getRowKey(series);
+                    seriesFillPaint = key_supplier.getNextFillPaint(key);
+                }
+                else {
+                    seriesFillPaint = supplier.getNextFillPaint();
+                }
+                seriesFillPaint = supplier.getNextFillPaint();
+                setSeriesFillPaint(series, seriesFillPaint, false);
+            }
+        }
+        if (seriesFillPaint == null) {
+            seriesFillPaint = getDefaultFillPaint();
+        }
+        return seriesFillPaint;
+
+    }
+
+    /**
+     * Returns the paint used to outline an item drawn by the renderer.
+     *
+     * @param series  the series (zero-based index).
+     *
+     * @return The paint (never <code>null</code>).
+     *
+     * @since 1.0.6
+     */
+    @Override
+    public Paint lookupSeriesOutlinePaint(int series) {
+
+        Paint seriesOutlinePaint = getSeriesOutlinePaint(series);
+        if (seriesOutlinePaint == null && this.getAutoPopulateSeriesOutlinePaint()) {
+            DrawingSupplier supplier = getDrawingSupplier();
+
+            if (supplier != null) {
+                if (supplier instanceof KeyedDrawingSupplier) {
+                    KeyedDrawingSupplier key_supplier = (KeyedDrawingSupplier)supplier;
+                    final Comparable<?> key = getPlot().getDataset().getRowKey(series);
+                    seriesOutlinePaint = key_supplier.getNextOutlinePaint(key);
+                }
+                else {
+                    seriesOutlinePaint = supplier.getNextOutlinePaint();
+                }
+                seriesOutlinePaint = supplier.getNextOutlinePaint();
+                setSeriesOutlinePaint(series, seriesOutlinePaint, false);
+            }
+        }
+        if (seriesOutlinePaint == null) {
+            seriesOutlinePaint = getDefaultOutlinePaint();
+        }
+        return seriesOutlinePaint;
+
+    }
+    
+    /**
+     * Returns the stroke used to draw the items in a series.
+     *
+     * @param series  the series (zero-based index).
+     *
+     * @return The stroke (never <code>null</code>).
+     *
+     * @since 1.0.6
+     */
+    @Override
+    public Stroke lookupSeriesStroke(int series) {
+
+        Stroke result = getSeriesStroke(series);
+        if (result == null && this.getAutoPopulateSeriesStroke()) {
+            DrawingSupplier supplier = getDrawingSupplier();
+
+            if (supplier != null) {
+                if (supplier instanceof KeyedDrawingSupplier) {
+                    KeyedDrawingSupplier key_supplier = (KeyedDrawingSupplier)supplier;
+                    final Comparable<?> key = getPlot().getDataset().getRowKey(series);
+                    result = key_supplier.getNextStroke(key);
+                }
+                else {
+                    result = supplier.getNextStroke();
+                }
+                result = supplier.getNextStroke();
+                setSeriesStroke(series, result, false);
+            }
+        }
+        if (result == null) {
+            result = getDefaultStroke();
+        }
+        return result;
+
+    }
+
+    /**
+     * Returns the stroke used to outline the items in a series.
+     *
+     * @param series  the series (zero-based index).
+     *
+     * @return The stroke (never <code>null</code>).
+     *
+     * @since 1.0.6
+     */
+    @Override
+    public Stroke lookupSeriesOutlineStroke(int series) {
+
+        Stroke result = getSeriesOutlineStroke(series);
+        if (result == null && this.getAutoPopulateSeriesOutlineStroke()) {
+            DrawingSupplier supplier = getDrawingSupplier();
+
+            if (supplier != null) {
+                if (supplier instanceof KeyedDrawingSupplier) {
+                    KeyedDrawingSupplier key_supplier = (KeyedDrawingSupplier)supplier;
+                    final Comparable<?> key = getPlot().getDataset().getRowKey(series);
+                    result = key_supplier.getNextOutlineStroke(key);
+                }
+                else {
+                    result = supplier.getNextOutlineStroke();
+                }
+                result = supplier.getNextOutlineStroke();
+                setSeriesOutlineStroke(series, result, false);
+            }
+        }
+        if (result == null) {
+            result = getDefaultOutlineStroke();
+        }
+        return result;
+
+    }
+
+    /**
+     * Returns a shape used to represent the items in a series.
+     *
+     * @param series  the series (zero-based index).
+     *
+     * @return The shape (never <code>null</code>).
+     *
+     * @since 1.0.6
+     */
+    @Override
+    public Shape lookupSeriesShape(int series) {
+
+        Shape result = getSeriesShape(series);
+        if (result == null && this.getAutoPopulateSeriesShape()) {
+            DrawingSupplier supplier = getDrawingSupplier();
+
+            if (supplier != null) {
+                if (supplier instanceof KeyedDrawingSupplier) {
+                    KeyedDrawingSupplier key_supplier = (KeyedDrawingSupplier)supplier;
+                    final Comparable<?> key = getPlot().getDataset().getRowKey(series);
+                    result = key_supplier.getNextShape(key);
+                }
+                else {
+                    result = supplier.getNextShape();
+                }
+                result = supplier.getNextShape();
+                setSeriesShape(series, result, false);
+            }
+        }
+        if (result == null) {
+            result = getDefaultShape();
+        }
+        return result;
+
+    }
 }
