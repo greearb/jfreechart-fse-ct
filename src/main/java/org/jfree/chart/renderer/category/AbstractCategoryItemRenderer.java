@@ -1813,7 +1813,6 @@ public abstract class AbstractCategoryItemRenderer extends AbstractRenderer
                 else {
                     seriesPaint = supplier.getNextPaint();
                 }
-                seriesPaint = supplier.getNextPaint();
                 setSeriesPaint(series, seriesPaint, false);
             }
         }
@@ -1849,7 +1848,6 @@ public abstract class AbstractCategoryItemRenderer extends AbstractRenderer
                 else {
                     seriesFillPaint = supplier.getNextFillPaint();
                 }
-                seriesFillPaint = supplier.getNextFillPaint();
                 setSeriesFillPaint(series, seriesFillPaint, false);
             }
         }
@@ -1885,7 +1883,6 @@ public abstract class AbstractCategoryItemRenderer extends AbstractRenderer
                 else {
                     seriesOutlinePaint = supplier.getNextOutlinePaint();
                 }
-                seriesOutlinePaint = supplier.getNextOutlinePaint();
                 setSeriesOutlinePaint(series, seriesOutlinePaint, false);
             }
         }
@@ -1921,7 +1918,6 @@ public abstract class AbstractCategoryItemRenderer extends AbstractRenderer
                 else {
                     result = supplier.getNextStroke();
                 }
-                result = supplier.getNextStroke();
                 setSeriesStroke(series, result, false);
             }
         }
@@ -1957,7 +1953,6 @@ public abstract class AbstractCategoryItemRenderer extends AbstractRenderer
                 else {
                     result = supplier.getNextOutlineStroke();
                 }
-                result = supplier.getNextOutlineStroke();
                 setSeriesOutlineStroke(series, result, false);
             }
         }
@@ -1993,7 +1988,6 @@ public abstract class AbstractCategoryItemRenderer extends AbstractRenderer
                 else {
                     result = supplier.getNextShape();
                 }
-                result = supplier.getNextShape();
                 setSeriesShape(series, result, false);
             }
         }
